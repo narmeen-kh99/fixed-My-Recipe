@@ -5,6 +5,7 @@ class APIManager {
     this.ingredient = "";
     this.gluten = "";
     this.dairy = "";
+    this.index = 0;
   }
   nextVal() {
     this.next = $("#next").on("clik", () => {

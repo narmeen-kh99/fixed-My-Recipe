@@ -2,20 +2,13 @@ const express = require("express");
 const router = express();
 const axios = require("axios");
 const bodyParser = require("body-parser");
+const data = require("./data");
+const { glutenIngredients } = require("./data");
 
-dairyIngredients = [
-  "Cream",
-  "Cheese",
-  "Milk",
-  "Butter",
-  "Creme",
-  "Ricotta",
-  "Mozzarella",
-  "Custard",
-  "Cream Cheese",
-];
-glutenIngredients = ["Flour", "Bread", "spaghetti", "Biscuits", "Beer"];
-let dairyGlutenIngredients = [].concat(glutenIngredients, dairyIngredients);
+let dairyGlutenIngredients = [].concat(
+  data.glutenIngredients,
+  data.dairyIngredients
+);
 checkCommonsItems = function (arr1, arr2) {
   for (let i = 0; i < arr1.length; i++) {
     for (let j = 0; j < arr2.length; j++) {
@@ -32,38 +25,24 @@ checkCommonsItems = function (arr1, arr2) {
   return false;
 };
 
-
 router.get("/recipes/:ingredientName", (req, res) => {
   let Gluten = req.query.gluten;
   let Dairy = req.query.dairy;
   let next = req.query.next;
   ingredientR = req.params.ingredientName;
-
+  arr = [];
+  if (Dairy == "true") {
+    arr.push(...data.dairyIngredients);
+  }
+  if (Gluten == "true") {
+    arr.push(...data.glutenIngredients);
+  }
   axios
     .get(
       `https://recipes-goodness-elevation.herokuapp.com/recipes/ingredient/${req.params.ingredientName}`
     )
     .then((recipes) => {
-      let result = "";
-      let Recipes = initDataRecipes(recipes);
-      let RecipesWithoutGluten = [];
-      let RecipesWithoutDairy = [];
-      let bothGletenDairyR = [];
-      if (Gluten == "true" && Dairy == "false") {
-        res.send(
-          (resipesFilter(recipes, glutenIngredients))
-        );
-      } else if (Gluten == "false" && Dairy == "true") {
-        res.send(
-          (resipesFilter(recipes, dairyIngredients))
-        );
-      } else if (Gluten == "true" && Dairy == "true") {
-        res.send(
-          (resipesFilter(recipes, dairyGlutenIngredients))
-        );
-      } else {
-        res.send(Recipes);
-      }
+      res.send(resipesFilter(recipes, arr));
     });
 });
 
