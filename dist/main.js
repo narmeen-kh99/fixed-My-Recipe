@@ -1,9 +1,15 @@
 const apiManager = new APIManager();
 const render = new Renderer();
 $("#Search").on("click", () => {
+  apiManager.page = 1;
   apiManager.getReipes();
 });
-$("#next").on("clik", () => {
+$("#next").on("click", () => {
+  apiManager.page++;
+  apiManager.getReipes();
+});
+$("#back").on("click", () => {
+  apiManager.page--;
   apiManager.getReipes();
 });
 $(document).on("click", "img", function () {

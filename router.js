@@ -3,12 +3,7 @@ const router = express();
 const axios = require("axios");
 const bodyParser = require("body-parser");
 const data = require("./data");
-const { glutenIngredients } = require("./data");
 
-let dairyGlutenIngredients = [].concat(
-  data.glutenIngredients,
-  data.dairyIngredients
-);
 checkCommonsItems = function (arr1, arr2) {
   for (let i = 0; i < arr1.length; i++) {
     for (let j = 0; j < arr2.length; j++) {
@@ -28,7 +23,9 @@ checkCommonsItems = function (arr1, arr2) {
 router.get("/recipes/:ingredientName", (req, res) => {
   let Gluten = req.query.gluten;
   let Dairy = req.query.dairy;
-  let next = req.query.next;
+  let page = req.query.page;
+  let startIndex = (page - 1) * 6;
+  let endIndex = page * 6;
   ingredientR = req.params.ingredientName;
   arr = [];
   if (Dairy == "true") {
@@ -42,7 +39,7 @@ router.get("/recipes/:ingredientName", (req, res) => {
       `https://recipes-goodness-elevation.herokuapp.com/recipes/ingredient/${req.params.ingredientName}`
     )
     .then((recipes) => {
-      res.send(resipesFilter(recipes, arr));
+      res.send(resipesFilter(recipes, arr).slice(startIndex, endIndex));
     });
 });
 
