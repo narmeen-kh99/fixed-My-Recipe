@@ -24,6 +24,7 @@ router.get("/recipes/:ingredientName", (req, res) => {
   let Gluten = req.query.gluten;
   let Dairy = req.query.dairy;
   let page = req.query.page;
+  let ingredientN = req.query.ingredientN;
   let startIndex = (page - 1) * 6;
   let endIndex = page * 6;
   ingredientR = req.params.ingredientName;
@@ -33,6 +34,9 @@ router.get("/recipes/:ingredientName", (req, res) => {
   }
   if (Gluten == "true") {
     arr.push(...data.glutenIngredients);
+  }
+  if (ingredientN != "") {
+    arr.push(ingredientN);
   }
   axios
     .get(
